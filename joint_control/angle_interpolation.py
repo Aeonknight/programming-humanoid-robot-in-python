@@ -21,7 +21,8 @@
 
 
 from pid import PIDAgent
-from keyframes import hello
+from keyframes import *
+import numpy as np
 
 
 class AngleInterpolationAgent(PIDAgent):
@@ -32,6 +33,7 @@ class AngleInterpolationAgent(PIDAgent):
                  sync_mode=True):
         super(AngleInterpolationAgent, self).__init__(simspark_ip, simspark_port, teamname, player_id, sync_mode)
         self.keyframes = ([], [], [])
+        self.sTime = -1
 
     def think(self, perception):
         target_joints = self.angle_interpolation(self.keyframes, perception)
