@@ -30,7 +30,8 @@ class InverseKinematicsAgent(ForwardKinematicsAgent):
         '''solve the inverse kinematics and control joints use the results
         '''
         # YOUR CODE HERE
-        self.keyframes = ([], [], [])  # the result joint angles have to fill in
+
+        self.keyframes = ([],[],[])  # the result joint angles have to fill in
 
 if __name__ == '__main__':
     agent = InverseKinematicsAgent()
