@@ -7,6 +7,11 @@
 '''
 
 import weakref
+import xmlrpclib
+import threading
+import os
+import sys
+import numpy as np
 
 class PostHandler(object):
     '''the post hander wraps function to be excuted in paralle
@@ -17,10 +22,14 @@ class PostHandler(object):
     def execute_keyframes(self, keyframes):
         '''non-blocking call of ClientAgent.execute_keyframes'''
         # YOUR CODE HERE
+        thread = threading.Thread(target=self.proxy.execute_keyframes, args=[keyframes])
+        thread.start
 
     def set_transform(self, effector_name, transform):
         '''non-blocking call of ClientAgent.set_transform'''
         # YOUR CODE HERE
+        thread = threading.Thread(target=self.proxy.set_transfrom, args=[effector_name, transform])
+        thread.start
 
 
 class ClientAgent(object):
@@ -28,39 +37,48 @@ class ClientAgent(object):
     '''
     # YOUR CODE HERE
     def __init__(self):
-        self.post = PostHandler(self)
-    
+        self.Proxy = xmlrpclib.ServerProxy("http://localhost:9000")
+        self.post = PostHandler(self.Proxy)
+
     def get_angle(self, joint_name):
         '''get sensor value of given joint'''
         # YOUR CODE HERE
-    
+        return self.Proxy.get_angle(joint_name)
+
     def set_angle(self, joint_name, angle):
         '''set target angle of joint for PID controller
         '''
         # YOUR CODE HERE
+        self.Proxy.set_angle(joint_name, angle)
 
     def get_posture(self):
         '''return current posture of robot'''
         # YOUR CODE HERE
+        return self.Proxy.get_posture
 
     def execute_keyframes(self, keyframes):
         '''excute keyframes, note this function is blocking call,
         e.g. return until keyframes are executed
         '''
         # YOUR CODE HERE
+        self.post.execute_keyframes(keyframes)
 
     def get_transform(self, name):
         '''get transform with given name
         '''
         # YOUR CODE HERE
+        return self.Proxy.get_transform(name)
 
     def set_transform(self, effector_name, transform):
         '''solve the inverse kinematics and control joints use the results
         '''
         # YOUR CODE HERE
+        self.post.set_transform(effector_name, transform)
 
 if __name__ == '__main__':
     agent = ClientAgent()
     # TEST CODE HERE
-
-
+    print agent.get_transform("RArm")
+    agent.set_angle("HeadPitch", 30)
+    print agent.get_angle("HeadPitch")
+    print agent.get_posture()
