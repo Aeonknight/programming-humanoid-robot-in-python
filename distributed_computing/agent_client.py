@@ -78,7 +78,6 @@ class ClientAgent(object):
 if __name__ == '__main__':
     agent = ClientAgent()
     # TEST CODE HERE
-    print agent.get_transform("RArm")
+    print agent.get_transform("HeadYaw")
     agent.set_angle("HeadPitch", 30)
     print agent.get_angle("HeadPitch")
-    print agent.get_posture()
